@@ -1,1 +1,215 @@
-test
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Power Ball Odds</title>
+  <meta name="description" content="My numbers chances">
+  <meta name="author" content="Keenan Karich">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+<link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
+  
+    <style>
+    body {
+        background-color: #1c1c1f;
+        color:white;
+    }
+    .container{
+        display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    justify-content: center;
+    }
+    .text-center{
+        text-align:center;
+    }
+    .spinner {
+      margin: 100px auto;
+      width: 50px;
+      height: 40px;
+      text-align: center;
+      font-size: 10px;
+    }
+    #pb-pick{
+        border-color: #d9534f;
+    background-color: #d9534f;
+    color: white;
+    }
+    
+    @media (min-width: 1000px) {
+  
+    .pick,#pb-pick{
+        width:100px;
+        height:100px;
+        border-radius:50%;
+        font-size: 20px;
+        text-align:center;
+    }
+}
+
+.spinner > div {
+  background-color: #fff;
+  height: 100%;
+  width: 6px;
+  display: inline-block;
+  
+  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  animation: sk-stretchdelay 1.2s infinite ease-in-out;
+}
+
+.spinner .rect2 {
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s;
+}
+
+.spinner .rect3 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+.spinner .rect4 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+
+.spinner .rect5 {
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s;
+}
+
+@-webkit-keyframes sk-stretchdelay {
+  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
+  20% { -webkit-transform: scaleY(1.0) }
+}
+
+@keyframes sk-stretchdelay {
+  0%, 40%, 100% { 
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }  20% { 
+    transform: scaleY(1.0);
+    -webkit-transform: scaleY(1.0);
+  }
+}
+    </style>
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+    <div class="container">
+      <!-- Content here -->
+      <div id="powerball-form">
+      <h1>Test your lucky numbers!</h1>
+          <form id="powerball-submit" class="form-inline">
+              <fieldset class="form-group">
+                <input type="number" value="1" class="form-control pick" min="1" max="69">
+              </fieldset>
+              <fieldset class="form-group">
+                <input type="number" value="2" class="form-control pick" min="1" max="69">
+              </fieldset>
+              <fieldset class="form-group">
+                <input type="number" value="3" class="form-control pick" min="1" max="69">
+              </fieldset>
+              <fieldset class="form-group">
+                <input  type="number" value="4" class="form-control pick" min="1" max="69">
+              </fieldset>
+              <fieldset class="form-group">
+                <input type="number" value="5" class="form-control pick" min="1" max="69">
+              </fieldset>
+              <fieldset class="form-group">
+                <input id="pb-pick" type="number" value="1" class="form-control" min="1" max="29">
+              </fieldset>
+              <button type="submit" class="btn btn-success-outline">Show me the money</button>
+          </form>
+      </div>
+      
+      <div id="loading" style="display: none;">
+        <div class="spinner">
+          <div class="rect1"></div>
+          <div class="rect2"></div>
+          <div class="rect3"></div>
+          <div class="rect4"></div>
+          <div class="rect5"></div>
+        </div>
+            <h1 class="text-center"> Running calculations </h1>
+      </div>
+      
+      <div id="results" style="display: none;">
+            <h1 class="text-center"> </h1>
+            <button id="try-again" class="btn btn-success-outline btn-block">Try again</button>
+      </div>
+    </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script>
+    
+    <script type="text/javascript">
+        // submit 
+        $( "#powerball-submit" ).submit(function( event ) {
+          event.preventDefault();
+          // hide everything but loading div
+          $( "#powerball-form" ).hide();
+          $( "#results" ).hide();
+          $( "#loading" ).show();
+          
+          var $picks = $('.pick:input');
+
+            var picks = [];
+            var powerball = parseInt($('#pb-pick:input').val());
+            $picks.each(function() {
+                picks.push(parseInt($(this).val()));
+            
+            });
+            console.log(picks,powerball)
+          
+            var valid = checkSubmission(picks,powerball);
+            setTimeout(function() {
+                showResult(valid);
+            }, 3000)
+        });
+        
+        function showResult(valid) {
+            if(valid)
+                $('#results h1').text('Congradulations! Your lucky numbers will give you a 0.000000342229781% chance of winning the Power Ball.')
+            else
+                $('#results h1').text('Not looking so good... You have a 0.00% chance of winning the Power Ball with those lucky numbers. Make sure your lucky numbers are valid before you play.')
+                
+          // hide everything but loading div
+          $( "#powerball-form" ).hide();
+          $( "#loading" ).hide();
+          $( "#results" ).show();
+            
+        }
+        
+        function checkSubmission(picks,powerball) {
+            console.log(picks,powerball, 'test')
+            var selected = {};
+            // check powerball
+            if(powerball < 1 || powerball > 29){
+                return false;
+            }
+            for(var i in picks){
+                var pick= picks[i];
+                if(pick < 1 || pick > 69)
+                    return false;
+                else if(selected[pick]===true)
+                    return false;
+                else
+                    selected[pick] = true
+            }
+            return true
+        }
+        $( "#try-again" ).click(function( event ) {
+          // hide everything but loading div
+          $( "#powerball-form" ).show();
+          $( "#results" ).hide();
+          $( "#loading" ).hide();
+        });
+    </script>
+</body>
+</html>
